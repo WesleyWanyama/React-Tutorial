@@ -5,5 +5,5 @@ Link to the Backend repository: https://github.com/WesleyWanyama/SpringbootApp.g
 
 ## Command to run the app
 ```node
-Nmp start
+Npm start
 ```
