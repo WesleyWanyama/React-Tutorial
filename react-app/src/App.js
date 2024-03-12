@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'; 
-import axios from 'axios';
+import axios from './api';
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -12,17 +12,16 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/person'); 
-      if (!response.ok) {
+      const response = await axios.get('/api/v1/person'); 
+      if (response.status !== 200) { // Check if status code is not 200 (OK)
         throw new Error('Failed to fetch data');
       }
-      const jsonData = await response.json();
+      const jsonData = response.data; // Use response.data to get the JSON data
       setData(jsonData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-
   const handleInputChange = (e) => {
     setNewPerson({ ...newPerson, [e.target.name]: e.target.value });
   };
@@ -30,7 +29,7 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/api/v1/person', newPerson);
+      await axios.post('/api/v1/person', newPerson);
       fetchData(); // Refresh data after adding a new person
       setNewPerson({ name: '' }); // Clear input fields
     } catch (error) {
