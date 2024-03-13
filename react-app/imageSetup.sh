@@ -4,7 +4,7 @@
 docker login
 
 #Tag the image
-docker tag react-frontend:v1 wesley3015/react-frontend:v1
+docker tag react-frontend:v2 wesley3015/react-frontend:v2
 
 #Push the image
-docker push wesley3015/react-frontend:v1
+docker push wesley3015/react-frontend:v2
