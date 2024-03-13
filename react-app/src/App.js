@@ -12,7 +12,7 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('api/v1/person'); 
+      const response = await axios.get('/api/v1/person'); 
       if (response.status !== 200) { // Check if status code is not 200 (OK)
         throw new Error('Failed to fetch data');
       }
@@ -29,7 +29,7 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('api/v1/person', newPerson);
+      await axios.post('/api/v1/person', newPerson);
       fetchData(); // Refresh data after adding a new person
       setNewPerson({ name: '' }); // Clear input fields
     } catch (error) {
