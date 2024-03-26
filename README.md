@@ -4,6 +4,24 @@ This is a documentation on the process of setting up a React app served by Nginx
 ## Steps:
 ### 1. Update React App Configuration
 Before building the React app, make sure to adjust the 'package.json' file by adding '"homepage":"."'. This ensures that the React app will be served from the current directory and all asset paths are relative to 'index.html'
+```
+{
+  "name": "react-app",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+}
+```
 
 ### 2. Build the React App
 Run the following command to create a build directory with a production build of your app.
