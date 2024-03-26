@@ -1,5 +1,7 @@
-# React Frontend
-This is just a basic react frontend app intended to fetch data from a database using a Springboot application as it backend. 
+# Setting up React App with Nginx on Docker (Nginx Reverse Proxy)
+This is a documentation on the process of setting up a React app served by Nginx on Docker, with additional configurations for proxying requests and handling SSL.
+
+
 
 Link to the Backend repository: https://github.com/WesleyWanyama/SpringbootApp.git
 
