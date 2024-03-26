@@ -13,9 +13,30 @@ npm run build
 
 ### 3. Create Nginx Configuration File
 In the same directory as your React app, create an 'nginx.conf' file. This file is used to set the root directory from which Nginx will serve files. It also directs all requests to the root URL to 'index.html'.
+```nginx
+server {
+    listen 80;
+
+    root /usr/share/nginx/html/;
+    index index.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri /index.html;
+    }
+}
+```
 
 ### 4. Create Dockerfile for React App
 Create a 'Dockerfile' in the React app directory which will be used to build the React app image using Nginx as the base image. The Nginx configuration will be copied in this file.
+```Dockerfile
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+RUN rm -rf /usr/share/nginx/html/*
+COPY build/ /usr/share/nginx/html/
+EXPOSE 80
+```
 
 ### 5. Build Docker Image
 Build the docker image for the React up by running the following command:
@@ -32,6 +53,30 @@ This command runs the container and maps port 82 on the host to port 80 in the c
 
 ### 7. Configure Nginx for Proxying
 Create a second 'nginx.conf' file in a different directory with configurations for proxying requests. This configuration sets up Nginx to listen on HTTPS, handles SSL certificates, and proxies requests to different services based on the URL path.
+```nginx
+server {
+    listen 443 ssl;
+    server_name localhost;
+
+    ssl_certificate /etc/nginx/conf.d/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/nginx/conf.d/nginx-selfsigned.key;
+
+    location /api/ {
+        proxy_pass http://backend:8080;
+    }
+
+    location /app/ {
+        proxy_pass http://frontend:80/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        #rewrite ^/app/(.*) /$1 break;
+    }
+}
+```
 
 ### 8. Create Docker Compose File
 Create a 'docker-compose.yml' file to orchestrate the Docker containers. 
@@ -40,7 +85,11 @@ version: '3.8'
 
 services:
   frontend:
-    # Frontend service configuration
+    restart: always
+    image: react-frontend:v10
+    container_name: frontend
+    ports:
+      - "3000:80"
 
   backend:
     # Backend service configuration
