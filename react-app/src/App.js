@@ -4,7 +4,7 @@ import axios from './api';
 
 const App = () => {
   const [data, setData] = useState([]);
-  const [newPerson, setNewPerson] = useState({name: ''});
+  const [newPerson, setNewPerson] = useState({ name: '', age: '' });
 
   useEffect(() => {
     fetchData();
@@ -12,16 +12,17 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('/api/v1/person'); 
-      if (response.status !== 200) { // Check if status code is not 200 (OK)
+      const response = await axios.get('/person/findAll'); 
+      if (response.status !== 200) {
         throw new Error('Failed to fetch data');
       }
-      const jsonData = response.data; // Use response.data to get the JSON data
+      const jsonData = response.data;
       setData(jsonData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   const handleInputChange = (e) => {
     setNewPerson({ ...newPerson, [e.target.name]: e.target.value });
   };
@@ -29,9 +30,9 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/v1/person', newPerson);
+      await axios.post('/person/insert', newPerson);
       fetchData(); // Refresh data after adding a new person
-      setNewPerson({ name: '' }); // Clear input fields
+      setNewPerson({ name: '', age: '' }); // Clear input fields
     } catch (error) {
       console.error('Error adding new person:', error);
     }
@@ -43,15 +44,15 @@ const App = () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
+            <th>Age</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
+          {data.map((item, index) => (
+            <tr key={index}>
               <td>{item.name}</td>
+              <td>{item.age}</td>
             </tr>
           ))}
         </tbody>
@@ -64,6 +65,16 @@ const App = () => {
             type="text"
             name="name"
             value={newPerson.name}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          Age:
+          <input
+            type="number"
+            name="age"
+            value={newPerson.age}
             onChange={handleInputChange}
             required
           />
